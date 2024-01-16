@@ -1,26 +1,41 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+// src/App.tsx
+import { Container } from "@mui/material"
+import React, { useState } from "react"
+import BattleAnimation from "./components/BattleAnimation"
+import BattleButton from "./components/BattleButton"
+import BattleOutcome from "./components/BattleOutcome"
 
-function App() {
+const App: React.FC = () => {
+  const [isBattleStarted, setIsBattleStarted] = useState(false)
+  const [outcome, setOutcome] = useState<"Victory" | "Defeat" | null>(null)
+
+  const handleStartBattle = () => {
+    setIsBattleStarted(true)
+    // Reset outcome
+    setOutcome(null)
+  }
+
+  const handleAnimationEnd = () => {
+    setIsBattleStarted(false)
+    // Randomly decide the outcome
+    setOutcome(Math.random() < 0.5 ? "Victory" : "Defeat")
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <Container
+      maxWidth="sm"
+      style={{ textAlign: "center", paddingTop: "50px" }}
+    >
+      <BattleButton onStartBattle={handleStartBattle} />
+      {isBattleStarted && (
+        <BattleAnimation
+          isPlaying={isBattleStarted}
+          onAnimationEnd={handleAnimationEnd}
+        />
+      )}
+      <BattleOutcome outcome={outcome} />
+    </Container>
+  )
 }
 
-export default App;
+export default App
